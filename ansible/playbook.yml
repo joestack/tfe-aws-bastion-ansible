@@ -1,0 +1,33 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: False
+
+  tasks:
+  - name: install python 2
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- hosts: webnodes
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: ensure nginx is at the latest version
+    apt:
+      name: nginx
+      state: present
+  - name: write the nginx config file
+    template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+    notify:
+    - restart nginx
+  - name: ensure nginx is running
+    service:
+      name: nginx
+      state: started
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+
