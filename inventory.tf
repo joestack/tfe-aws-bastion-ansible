@@ -91,7 +91,7 @@ resource "null_resource" "ansible_run" {
     null_resource.cp_ansible,
     local_file.ansible_inventory,
     aws_instance.web_nodes,
-    aws_route53_record.jumphost,
+    aws_route53_record.jumphost
   ]
 
   triggers = {
