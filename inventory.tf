@@ -6,7 +6,7 @@
 ##
 data "template_file" "ansible_web_hosts" {
   count      = var.web_node_count
-  template   = file("${path.module}/templates/ansible_hosts.tpl")
+  template   = file("${path.root}/templates/ansible_hosts.tpl")
   depends_on = [aws_instance.web_nodes]
 
   vars = {
@@ -20,7 +20,7 @@ data "template_file" "ansible_web_hosts" {
 ## here we assign the WEB-NODES to the right GROUP
 ## 
 data "template_file" "ansible_groups" {
-  template = file("${path.module}/templates/ansible_groups.tpl")
+  template = file("${path.root}/templates/ansible_groups.tpl")
 
   vars = {
     #jump_host_ip  = "${aws_instance.jumphost.public_ip}"
@@ -37,7 +37,7 @@ resource "local_file" "ansible_inventory" {
   depends_on = [data.template_file.ansible_groups]
 
   content  = data.template_file.ansible_groups.rendered
-  filename = "${path.module}/inventory"
+  filename = "${path.root}/inventory"
 }
 
 ##
@@ -52,7 +52,7 @@ resource "null_resource" "provisioner" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/inventory"
+    source      = "${path.root}/inventory"
     destination = "~/inventory"
 
     connection {
@@ -73,7 +73,7 @@ resource "null_resource" "cp_ansible" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/ansible"
+    source      = "${path.root}/ansible"
     destination = "~/"
 
     connection {
