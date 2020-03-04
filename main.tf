@@ -171,9 +171,9 @@ resource "aws_elb" "web-elb" {
     Owner       = var.owner
   }
 
-  subnets         = [aws_subnet.pub_web_subnet.*.id]
+  subnets         = aws_subnet.pub_web_subnet.*.id
   security_groups = [aws_security_group.elb.id]
-  instances       = [aws_instance.web_nodes.*.id]
+  instances       = aws_instance.web_nodes.*.id
 
   listener {
     instance_port     = 80
