@@ -1,8 +1,10 @@
-## dynamically generate a `inventory` file for Ansible Configuration Automation 
+## dynamically generate an Ansible Inventory-File using nested Terraform Templates
+## -one template contains the entire sceleton of the Inventory-File
+## -the other template generates the amount of nodes within a [class]  
 
 ##
-## here we create the list of available WEB nodes
-## to be used as input for the GROUPS template
+## here we create the list of available Nodes for the [WEB] class
+## to be used as input for the sceleton template
 ##
 data "template_file" "ansible_web_hosts" {
   count      = var.web_node_count
@@ -12,26 +14,44 @@ data "template_file" "ansible_web_hosts" {
   vars = {
     node_name    = aws_instance.web_nodes.*.tags[count.index]["Name"]
     ansible_user = var.ssh_user
-    extra        = "ansible_host=${element(aws_instance.web_nodes.*.private_ip, count.index)}"
+    ip        = "ansible_host=${element(aws_instance.web_nodes.*.private_ip, count.index)}"
   }
 }
 
 ##
-## here we assign the WEB-NODES to the right GROUP
+## here we create the list of available Nodes for the [API] class
+## to be used as input for the sceleton template
+##
+# data "template_file" "ansible_api_hosts" {
+#   count      = var.api_node_count
+#   template   = file("${path.root}/templates/ansible_hosts.tpl")
+#   depends_on = [aws_instance.api_nodes]
+
+#   vars = {
+#     node_name    = aws_instance.api_nodes.*.tags[count.index]["Name"]
+#     ansible_user = var.ssh_user
+#     ip        = "ansible_host=${element(aws_instance.api_nodes.*.private_ip, count.index)}"
+#   }
+# }
+
+
+
+##
+## here we assign the nodes of each [class] to the Inventory-File sceleton template file 
 ## 
 data "template_file" "ansible_groups" {
   template = file("${path.root}/templates/ansible_groups.tpl")
 
   vars = {
-    #jump_host_ip  = "${aws_instance.jumphost.public_ip}"
-    #ssh_user_name = "${var.ssh_user}"
     web_hosts_def = join("", data.template_file.ansible_web_hosts.*.rendered)
+    #api_hosts_def = join("", data.template_file.ansible_api_hosts.*.rendered) 
   }
 }
 
+
 ##
-## here we write the rendered "ansible_groups" template into a local file
-## on the Terraform exec environment (the shell where the terraform binary runs)
+## here we write the rendered Inventory-File to a local file
+## on the Terraform exec environment 
 ##
 resource "local_file" "ansible_inventory" {
   depends_on = [data.template_file.ansible_groups]
@@ -41,7 +61,7 @@ resource "local_file" "ansible_inventory" {
 }
 
 ##
-## here we copy the local file to the jumphost
+## here we copy the local file to the bastionhost
 ## using a "null_resource" to be able to trigger a file provisioner
 ##
 resource "null_resource" "provisioner" {
@@ -57,7 +77,7 @@ resource "null_resource" "provisioner" {
 
     connection {
       type        = "ssh"
-      host        = aws_instance.jumphost.public_ip
+      host        = aws_instance.bastionhost.public_ip
       user        = var.ssh_user
       private_key = var.id_rsa_aws
       insecure    = true
@@ -65,6 +85,9 @@ resource "null_resource" "provisioner" {
   }
 }
 
+##
+## here we copy the Ansible Playbook to the Bastionhost
+##
 resource "null_resource" "cp_ansible" {
   depends_on = [null_resource.provisioner]
 
@@ -78,7 +101,7 @@ resource "null_resource" "cp_ansible" {
 
     connection {
       type        = "ssh"
-      host        = aws_instance.jumphost.public_ip
+      host        = aws_instance.bastionhost.public_ip
       user        = var.ssh_user
       private_key = var.id_rsa_aws
       insecure    = true
@@ -86,12 +109,15 @@ resource "null_resource" "cp_ansible" {
   }
 }
 
+##
+## here we trigger the execution of the Ansible Playbook automatically with every Terraform run
+##
 resource "null_resource" "ansible_run" {
   depends_on = [
     null_resource.cp_ansible,
     local_file.ansible_inventory,
     aws_instance.web_nodes,
-    aws_route53_record.jumphost,
+    aws_route53_record.bastionhost,
     aws_route_table.rtb-nat,
     aws_instance.nat
   ]
@@ -102,7 +128,7 @@ resource "null_resource" "ansible_run" {
 
   connection {
     type        = "ssh"
-    host        = aws_instance.jumphost.public_ip
+    host        = aws_instance.bastionhost.public_ip
     user        = var.ssh_user
     private_key = var.id_rsa_aws
     insecure    = true

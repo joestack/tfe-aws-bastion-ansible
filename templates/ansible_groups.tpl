@@ -3,3 +3,6 @@ ansible_ssh_common_args='-o UserKnownHostsFile=/dev/null -o StrictHostKeyCheckin
 
 [webnodes]
 ${web_hosts_def}
+
+#[apinodes]
+#${api_hosts_def}
