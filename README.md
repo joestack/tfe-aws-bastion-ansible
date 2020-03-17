@@ -14,7 +14,7 @@ In other words: None of those tools are meant to substitute the other. They work
 
 * We have web-nodes within private subnets that are not accessible form public internet
   * we can scale out/in the amount of web-nodes
-  * the assignment of an ip address is dynamically (so we don't know them upfront and we don't care :)
+  * the assignment of an ip address is dynamically (so we don't know them upfront and we don't care)
 * We have a public facing loadbalancer to route traffic
   * the loadbalancer distributes the web traffic from the public facing side to the private web-nodes  
 * We have a public facing bastion host that is able to connect to the private web-nodes

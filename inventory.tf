@@ -39,8 +39,8 @@ data "template_file" "ansible_web_hosts" {
 ##
 ## here we assign the nodes of each [class] to the Inventory-File sceleton template file 
 ## 
-data "template_file" "ansible_groups" {
-  template = file("${path.root}/templates/ansible_groups.tpl")
+data "template_file" "ansible_sceleton" {
+  template = file("${path.root}/templates/ansible_sceleton.tpl")
 
   vars = {
     web_hosts_def = join("", data.template_file.ansible_web_hosts.*.rendered)
@@ -54,9 +54,9 @@ data "template_file" "ansible_groups" {
 ## on the Terraform exec environment 
 ##
 resource "local_file" "ansible_inventory" {
-  depends_on = [data.template_file.ansible_groups]
+  depends_on = [data.template_file.ansible_sceleton]
 
-  content  = data.template_file.ansible_groups.rendered
+  content  = data.template_file.ansible_sceleton.rendered
   filename = "${path.root}/inventory"
 }
 
