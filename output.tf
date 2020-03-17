@@ -7,7 +7,7 @@ output "Bastionhost_DNS" {
 }
 
 output "ELB_public_DNS" {
-  value = "${aws_route53_record.elb.name}.${var.dns_name}"
+  value = "${aws_route53_record.elb.name}.${var.dns_domain}"
 }
 
 output "ELB_AWS_internal_DNS" {
