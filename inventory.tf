@@ -1,10 +1,10 @@
 ## dynamically generate an Ansible Inventory-File using nested Terraform Templates
-## -one template contains the entire sceleton of the Inventory-File
+## -one template contains the entire skeleton of the Inventory-File
 ## -the other template generates the amount of nodes within a [class]  
 
 ##
 ## here we create the list of available Nodes for the [WEB] class
-## to be used as input for the sceleton template
+## to be used as input for the skeleton template
 ##
 data "template_file" "ansible_web_hosts" {
   count      = var.web_node_count
@@ -20,7 +20,7 @@ data "template_file" "ansible_web_hosts" {
 
 ##
 ## here we create the list of available Nodes for the [API] class
-## to be used as input for the sceleton template
+## to be used as input for the skeleton template
 ##
 # data "template_file" "ansible_api_hosts" {
 #   count      = var.api_node_count
@@ -37,10 +37,10 @@ data "template_file" "ansible_web_hosts" {
 
 
 ##
-## here we assign the nodes of each [class] to the Inventory-File sceleton template file 
+## here we assign the nodes of each [class] to the Inventory-File skeleton template file 
 ## 
-data "template_file" "ansible_sceleton" {
-  template = file("${path.root}/templates/ansible_sceleton.tpl")
+data "template_file" "ansible_skeleton" {
+  template = file("${path.root}/templates/ansible_skeleton.tpl")
 
   vars = {
     web_hosts_def = join("", data.template_file.ansible_web_hosts.*.rendered)
@@ -54,9 +54,9 @@ data "template_file" "ansible_sceleton" {
 ## on the Terraform exec environment 
 ##
 resource "local_file" "ansible_inventory" {
-  depends_on = [data.template_file.ansible_sceleton]
+  depends_on = [data.template_file.ansible_skeleton]
 
-  content  = data.template_file.ansible_sceleton.rendered
+  content  = data.template_file.ansible_skeleton.rendered
   filename = "${path.root}/inventory"
 }
 
