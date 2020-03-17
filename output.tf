@@ -11,6 +11,6 @@ output "ELB_public_DNS" {
 }
 
 output "ELB_AWS_internal_DNS" {
-  value = aws_elb.web-elb.dns_name
+  value = "${aws_elb.web-elb.dns_name}.${var.dns_domain}"
 }
 
