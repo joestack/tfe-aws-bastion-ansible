@@ -200,7 +200,8 @@ resource "aws_route53_record" "bastionhost" {
 
 resource "aws_route53_record" "elb" {
   zone_id = data.aws_route53_zone.selected.zone_id
-  name    = "${var.name}.data.aws_route53_zone.selected.name"
+#  name    = "${var.name}.data.aws_route53_zone.selected.name"
+  name    = var.name
   type    = "CNAME"
   ttl     = "300"
   records = [aws_elb.web-elb.dns_name]
