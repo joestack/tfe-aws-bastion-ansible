@@ -14,7 +14,7 @@ data "template_file" "ansible_web_hosts" {
   vars = {
     node_name    = aws_instance.web_nodes.*.tags[count.index]["Name"]
     ansible_user = var.ssh_user
-    ip        = "ansible_host=${element(aws_instance.web_nodes.*.private_ip, count.index)}"
+    ip           = element(aws_instance.web_nodes.*.private_ip, count.index)
   }
 }
 
