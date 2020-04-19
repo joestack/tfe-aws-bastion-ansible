@@ -55,7 +55,7 @@ variable "web_subnet_count" {
 
 variable "web_node_count" {
   description = "amount of worker nodes"
-  default     = "8"
+  default     = "2"
 }
 
 variable "instance_type" {
