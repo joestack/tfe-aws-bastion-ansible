@@ -116,9 +116,9 @@ resource "null_resource" "ansible_run" {
   depends_on = [
     null_resource.cp_ansible,
     local_file.ansible_inventory,
+    aws_instance.web_nodes,
+    aws_route53_record.bastionhost,
   ]
-    #aws_instance.web_nodes,
-    #aws_route53_record.bastionhost,
     #aws_route_table.rtb-nat,
     #aws_instance.nat
   #]
