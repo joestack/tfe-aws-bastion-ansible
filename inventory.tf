@@ -118,6 +118,7 @@ resource "null_resource" "ansible_run" {
     local_file.ansible_inventory,
     aws_instance.web_nodes,
     aws_route53_record.bastionhost,
+    aws_route53_record.elb,
     aws_route_table.rtb-nat,
     aws_instance.nat
   ]
@@ -137,7 +138,7 @@ resource "null_resource" "ansible_run" {
   provisioner "remote-exec" {
     inline = [
       "echo 'ssh is up...'",
-      "sleep 3 && ansible-playbook -i ~/inventory ~/ansible/playbook.yml ",
+      "sleep 10 && ansible-playbook -i ~/inventory ~/ansible/playbook.yml ",
     ]
   }
 }
