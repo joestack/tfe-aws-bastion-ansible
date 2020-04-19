@@ -137,7 +137,7 @@ resource "null_resource" "ansible_run" {
   provisioner "remote-exec" {
     inline = [
       "echo 'ssh is up...'",
-      "sleep 1 && ansible-playbook -i ~/inventory ~/ansible/playbook.yml ",
+      "sleep 3 && ansible-playbook -i ~/inventory ~/ansible/playbook.yml ",
     ]
   }
 }
