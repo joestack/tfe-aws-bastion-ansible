@@ -115,14 +115,15 @@ resource "null_resource" "cp_ansible" {
 resource "null_resource" "ansible_run" {
   depends_on = [
     null_resource.cp_ansible,
-    local_file.ansible_inventory,
+    null_resource.provisioner,
     aws_instance.web_nodes,
     aws_route53_record.bastionhost,
     aws_route53_record.elb,
     aws_route_table.rtb-nat,
     aws_instance.nat
   ]
-
+    #local_file.ansible_inventory,
+    
   triggers = {
     always_run = timestamp()
   }
