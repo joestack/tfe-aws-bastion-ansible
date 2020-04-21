@@ -14,17 +14,36 @@ variable "name" {
 variable "ttl" {
   description = "Time to live before destroyed"
 }
+variable "web_node_count" {
+  description = "number of worker nodes"
+  default     = "2"
+}
+
+variable "ssh_user" {
+  description = "default ssh user to get access to an instance"
+  default     = "ubuntu"
+}
+
+variable "instance_type" {
+  description = "instance size to be used for worker nodes"
+  default     = "t2.small"
+}
+
+variable "web_subnet_count" {
+  description = "number of subnets to be used for working nodes"
+  default     = "2"
+}
 
 variable "pub_key" {
-  
+  description = "the content of the public key"
 }
 
 variable "key_name" {
-  description = "private ssh id_rsa key to be used to access the nodes from the bastion host"
+  description = "The name of the public key"
 }
 
 variable "id_rsa_aws" {
-  description = "public ssh key used to access the bastion host"
+  description = "the private ssh key used by the bastion host to access the web instances"
 }
 
 variable "dns_domain" {
@@ -37,29 +56,10 @@ variable "network_address_space" {
   default     = "192.168.0.0/16"
 }
 
-variable "ssh_user" {
-  description = "default ssh user to get access to an instance"
-  default     = "ubuntu"
-}
-
 locals {
   mod_az = length(
     split(",", join(", ", data.aws_availability_zones.available.names)),
   )
 }
 
-variable "web_subnet_count" {
-  description = "amount of subnets to be used for working nodes"
-  default     = "2"
-}
-
-variable "web_node_count" {
-  description = "amount of worker nodes"
-  default     = "2"
-}
-
-variable "instance_type" {
-  description = "instance size to be used for worker nodes"
-  default     = "t2.small"
-}
 
