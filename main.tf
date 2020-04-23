@@ -4,6 +4,7 @@ terraform {
 
 provider "aws" {
     region = var.aws_region
+    version = "=2.55.0"
 }
 
 resource "aws_key_pair" "joestack_aws" {
