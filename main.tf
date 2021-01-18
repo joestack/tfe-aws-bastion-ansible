@@ -7,12 +7,6 @@ provider "aws" {
     version = "=2.55.0"
 }
 
-resource "aws_key_pair" "joestack_aws" {
-  key_name   = "joestack_aws"
-  public_key = var.pub_key
-}
-
-
 data "aws_availability_zones" "available" {}
 
 data "aws_ami" "ubuntu" {
@@ -56,8 +50,6 @@ resource "aws_vpc" "hashicorp_vpc" {
 
   tags = {
     Name        = "${var.name}-vpc"
-    TTL         = var.ttl
-    Owner       = var.owner
   }
 }
 
@@ -163,13 +155,11 @@ resource "aws_instance" "nat" {
   subnet_id                   = aws_subnet.dmz_subnet.id
   associate_public_ip_address = "true"
   vpc_security_group_ids      = [aws_security_group.nat.id]
-  key_name                    = var.key_name
+  key_name                    = var.pub_key
   source_dest_check           = false
 
   tags = {
     Name        = "nat-instance"
-    TTL         = var.ttl
-    Owner       = var.owner
   }
 }
 
@@ -179,8 +169,6 @@ resource "aws_elb" "web-elb" {
 
   tags = {
     Name        = "web-elb"
-    TTL         = var.ttl
-    Owner       = var.owner
   }
 
   subnets         = aws_subnet.pub_web_subnet.*.id
