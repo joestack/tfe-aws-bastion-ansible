@@ -15,7 +15,8 @@ output "inventory" {
 }
 
 output "ansible_hosts" {
-  value = data.template_file.ansible_web_hosts.rendered}
+  value = data.template_file.ansible_web_hosts.rendered
+}
 
 output "web_node_ips" {
   value = aws_instance.web_nodes.*.private_ip
