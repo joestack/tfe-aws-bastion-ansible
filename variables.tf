@@ -19,7 +19,7 @@ variable "instance_type" {
 
 variable "web_subnet_count" {
   description = "number of subnets to be used for working nodes"
-  default     = "2"
+  default     = "4"
 }
 
 variable "ssh_user" {
