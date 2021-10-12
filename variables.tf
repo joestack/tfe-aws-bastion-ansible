@@ -19,7 +19,7 @@ variable "instance_type" {
 
 variable "web_subnet_count" {
   description = "number of subnets to be used for working nodes"
-  default     = "4"
+  default     = "2"
 }
 
 variable "ssh_user" {
@@ -46,10 +46,14 @@ variable "network_address_space" {
   default     = "192.168.0.0/16"
 }
 
+#locals {
+#  mod_az = length(
+#    split(",", join(", ", data.aws_availability_zones.available.names)),
+#  )
+#}
+
 locals {
-  mod_az = length(
-    split(",", join(", ", data.aws_availability_zones.available.names)),
-  )
+  mod_az = 2
 }
 
 locals {
