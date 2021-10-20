@@ -9,7 +9,7 @@ variable "name" {
 
 variable "web_node_count" {
   description = "number of worker nodes"
-  default     = "50"
+  default     = "5"
 }
 
 variable "instance_type" {
