@@ -52,9 +52,9 @@ variable "network_address_space" {
 #  )
 #}
 
-locals {
-  mod_az = 2
-}
+#locals {
+#  mod_az = 2
+#}
 
 locals {
   priv_key = base64decode(var.pri_key)
