@@ -145,7 +145,7 @@ resource "aws_subnet" "pub_web_subnet" {
   cidr_block              = cidrsubnet(var.network_address_space, 8, count.index + 10)
   vpc_id                  = aws_vpc.hashicorp_vpc.id
   map_public_ip_on_launch = "true"
-  availability_zone       = element(data.aws_availability_zones.available.names[count.index])
+  availability_zone       = element(data.aws_availability_zones.available.names, count.index)
 
   tags = {
     Name        = "web-pub-subnet"
@@ -160,7 +160,7 @@ resource "aws_subnet" "web_subnet" {
   vpc_id                  = aws_vpc.hashicorp_vpc.id
   map_public_ip_on_launch = "false"
 
-  availability_zone       = element(data.aws_availability_zones.available.names[count.index])
+  availability_zone       = element(data.aws_availability_zones.available.names, count.index)
 
   tags = {
     Name        = "web-prv-subnet"
