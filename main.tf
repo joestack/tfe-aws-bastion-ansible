@@ -1,10 +1,14 @@
 terraform {
   required_version = ">= 0.12"
+  required_providers {
+    aws = {
+      version = "~> 2.70.0"
+    }
+  }
 }
 
 provider "aws" {
     region = var.aws_region
-    version = "=2.55.0"
 }
 
 data "aws_availability_zones" "available" {
