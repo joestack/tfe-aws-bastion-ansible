@@ -4,7 +4,7 @@ terraform {
 
 provider "aws" {
     region = var.aws_region
-    #version = "=2.55.0"
+    version = "=2.55.0"
 }
 
 data "aws_availability_zones" "available" {
