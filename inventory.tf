@@ -120,7 +120,7 @@ resource "null_resource" "ansible_run" {
     aws_route53_record.bastionhost,
     aws_route53_record.elb,
     aws_route_table.rtb-nat,
-    aws_instance.nat
+    #aws_instance.nat
   ]
     #local_file.ansible_inventory,
     
