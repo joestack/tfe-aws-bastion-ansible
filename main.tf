@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 0.12"
   required_providers {
     aws = {
-      version = "~> 2.70.0"
+      version = "~> 4.35.0"
     }
   }
 }
@@ -31,36 +31,48 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-data "aws_ami" "nat_instance" {
-  most_recent = true
+# data "aws_ami" "nat_instance" {
+#   most_recent = true
 
-  filter {
-    name   = "name"
-    values = ["amzn-ami-vpc-nat-hvm-*"]
-  }
+#   filter {
+#     name   = "name"
+#     values = ["amzn-ami-vpc-nat-hvm-*"]
+#   }
 
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
+#   filter {
+#     name   = "virtualization-type"
+#     values = ["hvm"]
+#   }
 
-  owners = ["137112412989"] # Amazon
-}
+#   owners = ["137112412989"] # Amazon
+# }
 
-resource "aws_instance" "nat" {
-  ami                         = data.aws_ami.nat_instance.id
-  instance_type               = "t2.micro"
-  subnet_id                   = aws_subnet.dmz_subnet.id
-  associate_public_ip_address = "true"
-  vpc_security_group_ids      = [aws_security_group.nat.id]
-  key_name                    = var.pub_key
-  source_dest_check           = false
+# resource "aws_instance" "nat" {
+#   ami                         = data.aws_ami.nat_instance.id
+#   instance_type               = "t2.micro"
+#   subnet_id                   = aws_subnet.dmz_subnet.id
+#   associate_public_ip_address = "true"
+#   vpc_security_group_ids      = [aws_security_group.nat.id]
+#   key_name                    = var.pub_key
+#   source_dest_check           = false
+
+#   tags = {
+#     Name        = "nat-instance"
+#   }
+# }
+
+resource "aws_nat_gateway" "nat" {
+  #allocation_id = aws_eip.example.id
+  subnet_id     = aws_subnet.dmz_subnet.id
 
   tags = {
-    Name        = "nat-instance"
+    Name = "gw NAT"
   }
-}
 
+  # To ensure proper ordering, it is recommended to add an explicit dependency
+  # on the Internet Gateway for the VPC.
+  depends_on = [aws_internet_gateway.igw]
+}
 
 
 # Network & Routing
@@ -101,7 +113,8 @@ resource "aws_route_table" "rtb-nat" {
 
   route {
     cidr_block  = "0.0.0.0/0"
-    instance_id = aws_instance.nat.id
+    #instance_id = aws_instance.nat.id
+    instance_id = aws_nat_gateway.nat
   }
 
   tags = {
