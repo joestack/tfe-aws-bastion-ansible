@@ -262,6 +262,15 @@ resource "aws_security_group_rule" "jh-ssh" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "jh-boundary" {
+  security_group_id = aws_security_group.bastionhost.id
+  type              = "ingress"
+  from_port         = 9202
+  to_port           = 9202
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
 resource "aws_security_group_rule" "jh-egress" {
   security_group_id = aws_security_group.bastionhost.id
   type              = "egress"
