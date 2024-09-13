@@ -66,7 +66,7 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_eip" "nat_gateway" {
   #vpc = true
-  domain = "vpc"
+  #domain = "vpc"
 }
 
 resource "aws_nat_gateway" "nat" {
