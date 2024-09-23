@@ -80,7 +80,7 @@ resource "null_resource" "provisioner" {
       host        = aws_instance.bastionhost.public_ip
       user        = var.ssh_user
       private_key = local.priv_key
-      insecure    = true
+      #insecure    = true
     }
   }
 }
@@ -104,7 +104,7 @@ resource "null_resource" "cp_ansible" {
       host        = aws_instance.bastionhost.public_ip
       user        = var.ssh_user
       private_key = local.priv_key
-      insecure    = true
+      #insecure    = true
     }
   }
 }
@@ -133,7 +133,7 @@ resource "null_resource" "ansible_run" {
     host        = aws_instance.bastionhost.public_ip
     user        = var.ssh_user
     private_key = local.priv_key
-    insecure    = true
+    #insecure    = true
   }
 
   provisioner "remote-exec" {
