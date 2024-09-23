@@ -1,19 +1,19 @@
 ---
 - hosts: all
-  become: yes
+  become: true
   gather_facts: False
 
   tasks:
   - name: install python 2
-    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python2-minimal)
     retries: 5
     delay: 15
     register: result
     until: result.rc == 0
 
 - hosts: webnodes
-  become: yes
-  gather_facts: no
+  become: true
+  gather_facts: false
   tasks:
   - name: ensure nginx is at the latest version
     apt:
