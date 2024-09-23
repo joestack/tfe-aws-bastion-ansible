@@ -73,7 +73,7 @@ resource "null_resource" "provisioner" {
 
   provisioner "file" {
     source      = "${path.root}/inventory"
-    destination = "~/inventory"
+    destination = "/home/ubuntu/inventory"
 
     connection {
       type        = "ssh"
